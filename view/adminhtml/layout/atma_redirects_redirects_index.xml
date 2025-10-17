@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Atma. All rights reserved.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="styles"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Atma\Redirects\Block\Adminhtml\Redirects\Upload" 
+                   name="atma.redirects.upload" 
+                   template="Atma_Redirects::redirects/upload.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

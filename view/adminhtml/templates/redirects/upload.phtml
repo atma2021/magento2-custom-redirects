@@ -1,0 +1,206 @@
+<?php
+/**
+ * Copyright © Atma. All rights reserved.
+ *
+ * @var $block \Atma\Redirects\Block\Adminhtml\Redirects\Upload
+ */
+?>
+<div class="page-main-actions">
+    <div class="page-actions">
+        <button type="button" class="action-default scalable save primary" id="upload-button">
+            <span><?= $block->escapeHtml(__('Upload CSV File')) ?></span>
+        </button>
+    </div>
+</div>
+
+<div class="admin__scope-old">
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h2 class="legend"><?= $block->escapeHtml(__('Upload Custom Redirects')) ?></h2>
+        </div>
+        
+        <div class="fieldset-wrapper">
+            <fieldset class="fieldset">
+                <div class="messages">
+                    <div class="message message-notice">
+                        <div>
+                            <strong><?= $block->escapeHtml(__('Important Instructions:')) ?></strong>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li><?= $block->escapeHtml(__('You must use the delimiter: |')) ?></li>
+                                <li><?= $block->escapeHtml(__('The string delimiter should be: "')) ?></li>
+                                <li><?= $block->escapeHtml(__('The column name must be: Url')) ?></li>
+                                <li><?= $block->escapeHtml(__('You can only upload CSV files')) ?></li>
+                                <li><?= $block->escapeHtml(__('Maximum file size: 50MB')) ?></li>
+                                <li><?= $block->escapeHtml(__('All URLs will be redirected to the store homepage with a 301 (permanent) redirect')) ?></li>
+                                <li><?= $block->escapeHtml(__('Query parameters (?param=value) are automatically stripped from URLs')) ?></li>
+                                <li><?= $block->escapeHtml(__('The uploaded file will be stored in var/custom-redirects/ directory')) ?></li>
+                                <li><?= $block->escapeHtml(__('Large files with 1000+ URLs may take a few minutes to process')) ?></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="message message-info" style="margin-top: 15px;">
+                        <div>
+                            <strong><?= $block->escapeHtml(__('CSV File Example:')) ?></strong>
+                            <pre style="margin-top: 10px; padding: 10px; background: #f5f5f5; border: 1px solid #ddd;">Url
+{base_url}/old-page-1.html
+{base_url}/old-page-2.html
+{base_url}/category/old-category.html</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="upload-form" 
+                      action="<?= $block->escapeUrl($block->getFormAction()) ?>" 
+                      method="post" 
+                      enctype="multipart/form-data">
+                    <?= $block->getBlockHtml('formkey') ?>
+                    
+                    <div class="admin__field field">
+                        <label class="admin__field-label" for="csv_file">
+                            <span><?= $block->escapeHtml(__('Select CSV File')) ?></span>
+                        </label>
+                        <div class="admin__field-control">
+                            <input type="file" 
+                                   name="csv_file" 
+                                   id="csv_file" 
+                                   class="admin__control-text" 
+                                   accept=".csv"
+                                   required="required" />
+                            <div class="admin__field-note">
+                                <span><?= $block->escapeHtml(__('Upload a CSV file with URLs to redirect to homepage')) ?></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+require([
+    'jquery',
+    'Magento_Ui/js/modal/alert',
+    'mage/translate'
+], function($, alert, $t) {
+    $('#upload-button').on('click', function() {
+        var form = $('#upload-form');
+        var fileInput = $('#csv_file');
+        
+        // Validation
+        if (!fileInput.val()) {
+            alert({
+                title: $t('Error'),
+                content: $t('Please select a CSV file to upload.')
+            });
+            return false;
+        }
+        
+        // Validate file extension
+        var fileName = fileInput.val();
+        var fileExtension = fileName.split('.').pop().toLowerCase();
+        
+        if (fileExtension !== 'csv') {
+            alert({
+                title: $t('Error'),
+                content: $t('Only CSV files are allowed. Please select a valid CSV file.')
+            });
+            return false;
+        }
+        
+        // Validate file size (max 50MB)
+        var fileSize = fileInput[0].files[0].size;
+        var maxSize = 50 * 1024 * 1024; // 50MB
+        
+        if (fileSize > maxSize) {
+            alert({
+                title: $t('Error'),
+                content: $t('File size exceeds 50MB. Please upload a smaller file.')
+            });
+            return false;
+        }
+        
+        // Show loading indicator for large files
+        if (fileSize > 1024 * 1024) { // > 1MB
+            $('body').trigger('processStart');
+        }
+        
+        // Submit form
+        form.submit();
+    });
+    
+    // Trigger validation on file input change
+    $('#csv_file').on('change', function() {
+        var fileName = $(this).val();
+        var fileExtension = fileName.split('.').pop().toLowerCase();
+        
+        if (fileName && fileExtension !== 'csv') {
+            alert({
+                title: $t('Warning'),
+                content: $t('Please select a CSV file. Other file types are not allowed.')
+            });
+            $(this).val('');
+        }
+    });
+});
+</script>
+
+<style>
+    .admin__scope-old .entry-edit {
+        margin-top: 20px;
+    }
+    
+    .admin__scope-old .entry-edit-head {
+        background: #e3e3e3;
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .admin__scope-old .entry-edit-head .legend {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .admin__scope-old .messages .message {
+        padding: 1.5rem;
+        padding-left: 4.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .admin__scope-old .messages .message::before {
+        left: 1.5rem;
+        position: absolute;
+        top: 1.5rem;
+    }
+    
+    .admin__scope-old .messages .message > div {
+        width: 100%;
+    }
+    
+    .admin__scope-old .messages .message ul {
+        list-style: disc;
+    }
+    
+    .admin__scope-old .messages .message ul li {
+        margin-bottom: 5px;
+    }
+    
+    .admin__field {
+        margin-bottom: 2rem;
+    }
+    
+    .admin__field-label {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    .admin__field-note {
+        margin-top: 0.5rem;
+        font-size: 1.2rem;
+        color: #666;
+    }
+</style>

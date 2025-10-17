@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Atma. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Atma_Redirects::custom_redirects"
+             title="Custom Redirects"
+             module="Atma_Redirects"
+             sortOrder="80"
+             action="atma_redirects/redirects/index"
+             resource="Atma_Redirects::custom_redirects"
+             parent="Magento_Backend::marketing_seo"/>
+    </menu>
+</config>
