@@ -45,7 +45,7 @@ class Upload extends Action
             $files = $this->getRequest()->getFiles();
 
             if (!isset($files['csv_file']) || !$files['csv_file']['tmp_name']) {
-                throw new \Exception(__('Please upload a CSV file.'));
+                throw new \Exception((string)__('Please upload a CSV file.'));
             }
 
             $file = $files['csv_file'];
@@ -53,12 +53,12 @@ class Upload extends Action
             // Validate file extension
             $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             if ($fileExtension !== 'csv') {
-                throw new \Exception(__('Only CSV files are allowed.'));
+                throw new \Exception((string)__('Only CSV files are allowed.'));
             }
 
             // Validate file size (max 50MB for large CSV files)
             if ($file['size'] > 50 * 1024 * 1024) {
-                throw new \Exception(__('File size exceeds 50MB limit.'));
+                throw new \Exception((string)__('File size exceeds 50MB limit.'));
             }
 
             // Create custom redirects directory
@@ -74,7 +74,7 @@ class Upload extends Action
             $destination = $varDir->getAbsolutePath($customRedirectsPath . '/' . $fileName);
 
             if (!move_uploaded_file($file['tmp_name'], $destination)) {
-                throw new \Exception(__('Failed to save uploaded file.'));
+                throw new \Exception((string)__('Failed to save uploaded file.'));
             }
 
             // Set CSV delimiter
@@ -84,7 +84,7 @@ class Upload extends Action
             $csvData = $this->csv->getData($destination);
 
             if (empty($csvData)) {
-                throw new \Exception(__('The CSV file is empty.'));
+                throw new \Exception((string)__('The CSV file is empty.'));
             }
 
             // Get headers
@@ -101,7 +101,7 @@ class Upload extends Action
             // Validate that 'Url' column exists
             $urlColumnIndex = array_search('Url', $headers);
             if ($urlColumnIndex === false) {
-                throw new \Exception(__('The CSV file must contain a column named "Url".'));
+                throw new \Exception((string)__('The CSV file must contain a column named "Url".'));
             }
 
             // Get store and set homepage redirect

@@ -2,7 +2,7 @@
     "name": "atma/magento2-custom-redirects",
     "description": "Magento 2 module for bulk CSV upload of custom redirects to homepage",
     "type": "magento2-module",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": [
         "proprietary"
     ],
